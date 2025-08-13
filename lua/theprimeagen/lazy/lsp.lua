@@ -1,150 +1,219 @@
-local root_files = {
-  '.luarc.json',
-  '.luarc.jsonc',
-  '.luacheckrc',
-  '.stylua.toml',
-  'stylua.toml',
-  'selene.toml',
-  'selene.yml',
-  '.git',
-}
+ return {
+	{
+		"williamboman/mason.nvim",
+		config = function()
+			require("mason").setup({
+				ui = {
+					icons = {
+						package_installed = "✓",
+						package_pending = "➜",
+						package_uninstalled = "✗",
+					},
+				},
+			})
+		end,
+	},
+	{
+		"williamboman/mason-lspconfig.nvim",
+		dependencies = { "mason.nvim" },
+		config = function()
+			require("mason-lspconfig").setup({
+				ensure_installed = {
+					"rust_analyzer",
+					"pyright",
+					"ts_ls",
+					"eslint",
+					"html",
+					"cssls",
+					"tailwindcss",
+					"emmet_ls",
+					"lua_ls",
+					"jsonls",
+					"yamlls",
+				},
+				automatic_installation = true,
+			})
+		end,
+	},
+	{
+		"neovim/nvim-lspconfig",
+		dependencies = {
+			"mason.nvim",
+			"mason-lspconfig.nvim",
+			"cmp-nvim-lsp",
+		},
+		config = function()
+			local lspconfig = require("lspconfig")
 
-return {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-        "stevearc/conform.nvim",
-        "williamboman/mason.nvim",
-        "williamboman/mason-lspconfig.nvim",
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-        "hrsh7th/cmp-cmdline",
-        "hrsh7th/nvim-cmp",
-        "L3MON4D3/LuaSnip",
-        "saadparwaiz1/cmp_luasnip",
-        "j-hui/fidget.nvim",
-    },
+			local on_attach = function(client, bufnr)
+				local opts = { noremap = true, silent = true, buffer = bufnr }
+				-- فعال کردن Inlay Hints در نئوویم 0.11+
+				if vim.lsp.inlay_hint and client.server_capabilities.inlayHintProvider then
+					vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+				end
+				-- کی‌مپ‌های مفید می‌تونی اینجا بذاری، مثلا:
+				-- vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+			end
 
-    config = function()
-        require("conform").setup({
-            formatters_by_ft = {
-            }
-        })
-        local cmp = require('cmp')
-        local cmp_lsp = require("cmp_nvim_lsp")
-        local capabilities = vim.tbl_deep_extend(
-            "force",
-            {},
-            vim.lsp.protocol.make_client_capabilities(),
-            cmp_lsp.default_capabilities())
+			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-        require("fidget").setup({})
-        require("mason").setup()
-        require("mason-lspconfig").setup({
-            ensure_installed = {
-                "lua_ls",
-                "rust_analyzer",
-                "gopls",
-                "tailwindcss",
-            },
-            handlers = {
-                function(server_name) -- default handler (optional)
-                    require("lspconfig")[server_name].setup {
-                        capabilities = capabilities
-                    }
-                end,
+			local default_config = {
+				on_attach = on_attach,
+				capabilities = capabilities,
+			}
 
-                zls = function()
-                    local lspconfig = require("lspconfig")
-                    lspconfig.zls.setup({
-                        root_dir = lspconfig.util.root_pattern(".git", "build.zig", "zls.json"),
-                        settings = {
-                            zls = {
-                                enable_inlay_hints = true,
-                                enable_snippets = true,
-                                warn_style = true,
-                            },
-                        },
-                    })
-                    vim.g.zig_fmt_parse_errors = 0
-                    vim.g.zig_fmt_autosave = 0
+			lspconfig.rust_analyzer.setup(default_config)
 
-                end,
-                ["lua_ls"] = function()
-                    local lspconfig = require("lspconfig")
-                    lspconfig.lua_ls.setup {
-                        capabilities = capabilities,
-                        settings = {
-                            Lua = {
-                                format = {
-                                    enable = true,
-                                    -- Put format options here
-                                    -- NOTE: the value should be STRING!!
-                                    defaultConfig = {
-                                        indent_style = "space",
-                                        indent_size = "2",
-                                    }
-                                },
-                            }
-                        }
-                    }
-                end,
-                ["tailwindcss"] = function()
-                    local lspconfig = require("lspconfig")
-                    lspconfig.tailwindcss.setup({
-                        capabilities = capabilities,
-                        filetypes = { "html", "css", "scss", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" },
-                        settings = {
-                            tailwindCSS = {
-                                experimental = {
-                                    classRegex = {
-                                        "tw`([^`]*)",
-                                        "tw=\"([^\"]*)",
-                                        "tw={\"([^\"}]*)",
-                                        "tw\\.\\w+`([^`]*)",
-                                        "tw\\(.*?\\)`([^`]*)",
-                                    },
-                                },
-                            },
-                        },
-                    })
-                end,
-            }
-        })
+			lspconfig.pyright.setup(default_config)
 
-        local cmp_select = { behavior = cmp.SelectBehavior.Select }
+			lspconfig.ts_ls.setup(vim.tbl_extend("force", default_config, {
+				settings = {
+					typescript = {
+						preferences = {
+							disableSuggestions = false,
+						},
+					},
+				},
+				filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+			}))
 
-        cmp.setup({
-            snippet = {
-                expand = function(args)
-                    require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-                end,
-            },
-            mapping = cmp.mapping.preset.insert({
-                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-                ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-                ["<C-Space>"] = cmp.mapping.complete(),
-            }),
-            sources = cmp.config.sources({
-                { name = "copilot", group_index = 2 },
-                { name = 'nvim_lsp' },
-                { name = 'luasnip' }, -- For luasnip users.
-            }, {
-                { name = 'buffer' },
-            })
-        })
+			lspconfig.eslint.setup(vim.tbl_extend("force", default_config, {
+				on_attach = function(client, bufnr)
+					on_attach(client, bufnr)
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						buffer = bufnr,
+						command = "EslintFixAll",
+					})
+				end,
+				settings = {
+					codeActionOnSave = {
+						enable = true,
+						mode = "all",
+					},
+				},
+			}))
 
-        vim.diagnostic.config({
-            -- update_in_insert = true,
-            float = {
-                focusable = false,
-                style = "minimal",
-                border = "rounded",
-                source = "always",
-                header = "",
-                prefix = "",
-            },
-        })
-    end
+			lspconfig.html.setup(vim.tbl_extend("force", default_config, {
+				filetypes = { "html", "htmldjango" },
+			}))
+
+			lspconfig.cssls.setup(vim.tbl_extend("force", default_config, {
+				settings = {
+					css = {
+						validate = true,
+						lint = { unknownAtRules = "ignore" },
+					},
+				},
+			}))
+
+			lspconfig.emmet_ls.setup(vim.tbl_extend("force", default_config, {
+				filetypes = {
+					"html",
+					"htmldjango",
+					"css",
+					"javascript",
+					"javascriptreact",
+					"typescript",
+					"typescriptreact",
+				},
+			}))
+
+			lspconfig.tailwindcss.setup(vim.tbl_extend("force", default_config, {
+				filetypes = {
+					"html",
+					"htmldjango",
+					"css",
+					"javascript",
+					"javascriptreact",
+					"typescript",
+					"typescriptreact",
+				},
+			}))
+
+			lspconfig.lua_ls.setup(vim.tbl_extend("force", default_config, {
+				settings = {
+					Lua = {
+						workspace = { checkThirdParty = false, library = { vim.env.VIMRUNTIME } },
+						telemetry = { enable = false },
+						diagnostics = { globals = { "vim" } },
+					},
+				},
+			}))
+
+			lspconfig.yamlls.setup(vim.tbl_extend("force", default_config, {
+				settings = {
+					yaml = {
+						schemas = {
+							["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json"] = "docker-compose*.yml",
+							["https://json.schemastore.org/github-workflow.json"] = ".github/workflows/*.yml",
+							kubernetes = "*.yaml",
+							["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] = ".gitlab-ci*.yml",
+						},
+						validate = true,
+						completion = true,
+						hover = true,
+					},
+				},
+				filetypes = { "yaml", "yml" },
+			}))
+
+			lspconfig.jsonls.setup(default_config)
+		end,
+	},
+	{
+		"hrsh7th/nvim-cmp",
+		dependencies = {
+			"hrsh7th/cmp-nvim-lsp",
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-path",
+			"L3MON4D3/LuaSnip",
+			"saadparwaiz1/cmp_luasnip",
+		},
+		config = function()
+			local cmp = require("cmp")
+			local luasnip = require("luasnip")
+
+			cmp.setup({
+				snippet = {
+					expand = function(args)
+						luasnip.lsp_expand(args.body)
+					end,
+				},
+				mapping = cmp.mapping.preset.insert({
+					["<C-b>"] = cmp.mapping.scroll_docs(-4),
+					["<C-f>"] = cmp.mapping.scroll_docs(4),
+					["<C-Space>"] = cmp.mapping.complete(),
+					["<C-e>"] = cmp.mapping.abort(),
+					["<CR>"] = cmp.mapping.confirm({ select = true }),
+
+					["<Tab>"] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_next_item()
+						elseif luasnip.expand_or_jumpable() then
+							luasnip.expand_or_jump()
+						else
+							fallback()
+						end
+					end, { "i", "s" }),
+
+					["<S-Tab>"] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_prev_item()
+						elseif luasnip.jumpable(-1) then
+							luasnip.jump(-1)
+						else
+							fallback()
+						end
+					end, { "i", "s" }),
+				}),
+				sources = cmp.config.sources({
+					{ name = "nvim_lsp" },
+					{ name = "luasnip" },
+				}, {
+					{ name = "buffer" },
+					{ name = "path" },
+				}),
+			})
+		end,
+	},
 }

@@ -2,6 +2,7 @@ require("theprimeagen.set")
 require("theprimeagen.remap")
 require("theprimeagen.lazy_init")
 
+-- Disable netrw (must be before plugins)
 -- DO.not
 -- DO NOT INCLUDE THIS
 

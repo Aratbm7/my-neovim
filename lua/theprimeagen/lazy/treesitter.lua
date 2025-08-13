@@ -6,7 +6,7 @@ return {
             -- A list of parser names, or "all"
             ensure_installed = {
                 "vimdoc", "javascript", "typescript", "c", "lua", "rust",
-                "jsdoc", "bash", "go",
+                "jsdoc", "bash", "python",
             },
 
             -- Install parsers synchronously (only applied to `ensure_installed`)
@@ -81,6 +81,9 @@ return {
                 zindex = 20, -- The Z-index of the context window
                 on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
             }
+         vim.keymap.set("n", "<leader>tc", function()
+        require("treesitter-context").toggle()
+      end, { desc = "Toggle Treesitter Context" })
         end
     }
 }

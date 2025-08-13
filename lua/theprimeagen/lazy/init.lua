@@ -1,10 +1,23 @@
 return {
 
+    -- اضافه کردن mason و mason-lspconfig
     {
-        "nvim-lua/plenary.nvim",
-        name = "plenary"
+        "williamboman/mason.nvim",
+        config = function()
+            require("mason").setup()
+        end,
+    },
+    {
+        "williamboman/mason-lspconfig.nvim",
+        dependencies = { "williamboman/mason.nvim" },
+        config = function()
+            require("mason-lspconfig").setup()
+        end,
     },
 
-    "eandrju/cellular-automaton.nvim",
+    -- پلاگین‌های دیگه که نیاز داری مثلا nvim-lspconfig
+    {
+        "neovim/nvim-lspconfig",
+    },
 }
 
