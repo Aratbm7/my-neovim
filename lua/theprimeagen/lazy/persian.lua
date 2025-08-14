@@ -1,4 +1,4 @@
--- فایل: ~/.config/nvim/lua/plugins/persian.lua
+-- فایل: ~/.conf-i-g---/-nvim/lua/plugins/persian.lua
 -- تنظیمات فارسی برای LazyVim (بدون پلاگین خارجی)
 
 return {
@@ -14,7 +14,7 @@ return {
           number = false,
         },
         cursorword = {
-          enable = true,
+          enable =false,
           min_length = 2,
           hl = { underline = true },
         }
