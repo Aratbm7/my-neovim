@@ -1,21 +1,55 @@
-### ThePrimeagen's init.lua
-        order_receipt: OrderReceipt = OrderReceipt.objects.create(
-            order=order, torob_reciept=True
-        )
-Prerequisite: install [ripgrep](https://github.com/BurntSushi/ripgrep).
+# My Neovim Setup
 
-[The full video of me setting up this repo](https://www.youtube.com/watch?v=w7i4amO_zaE)
+This repository contains my Neovim configuration using **ThePrimeagen's setup** with **Snacks.nvim** for enhanced productivity. It is tailored for coding in multiple languages with modern LSP support and VSCode-like behavior.
 
-For anyone that is interested in my vimrc, i will have a commit log below
-documenting each one of my commits (easy to C-f the change you want to know
-about though i would just suggest `git log -S`).
+---
 
-### Change Log
-* [33eee9ad](https://github.com/ThePrimeagen/init.lua/commit/33eee9ad0c035a92137d99dae06a2396be4c892e) initial commits
-* [cb210006](https://github.com/ThePrimeagen/init.lua/commit/cb210006356b4b613b71c345cb2b02eefa961fc0) netrw, autogroups for yank highlighting, and auto remove whitespace
-* [c8c0bf4a](https://github.com/ThePrimeagen/init.lua/commit/c8c0bf4aeacd0bd77136d9c5ee490680515a106b) zenmode.  i really like this plugin
-* [81c770d2](https://github.com/ThePrimeagen/init.lua/commit/81c770d2d2e32e59916b39c7f5babbc8560f7a82) copilot testing
-* [4a96e645](https://github.com/ThePrimeagen/init.lua/commit/4a96e6457b0a0241ca7361ce62177aa6b9a33a38) fugitive mappings for push and pull
-* [a3bad06a](https://github.com/ThePrimeagen/init.lua/commit/a3bad06a4681c322538d609aa1c0bd18880f77c6) disabled eslint.  driving me crazy
+## Features
 
+- **Auto-save** on text change, mimicking VSCode behavior.
+- **LSP integration** with auto inlay hints.
+- **Snacks.nvim** for explorer, quickfile, and toggles.
+- **Beautiful themes**: TokyoNight, Rose-Pine-Moon.
+- **JetBrains Mono font** for clean code readability.
+- **UTF-8 ready** for Persian and other languages.
+
+---
+
+## Keymaps (Snacks.nvim)
+
+### Toggle Options
+| Action | Keymap |
+|--------|--------|
+| Toggle Spelling | `<leader>us` |
+| Toggle Line Wrap | `<leader>uw` |
+| Toggle Relative Number | `<leader>uL` |
+| Toggle Diagnostics | `<leader>ud` |
+| Toggle Line Numbers | `<leader>ul` |
+| Toggle Conceal Level | `<leader>uc` |
+| Toggle Treesitter | `<leader>uT` |
+| Toggle Background (Light/Dark) | `<leader>ub` |
+| Toggle Inlay Hints | `<leader>uh` |
+| Toggle Indent Guides | `<leader>ug` |
+| Toggle Dim Text | `<leader>uD` |
+
+### LSP Navigation
+| Action | Keymap |
+|--------|--------|
+| Go to Definition | `gd` |
+| Go to Declaration | `gD` |
+| Go to Implementation | `gI` |
+| Go to References | `gr` |
+| Go to Type Definition | `gy` |
+| Workspace Symbols | `<leader>sS` |
+| LSP Symbols | `<leader>ss` |
+
+---
+
+## Installation
+
+1. Make sure you have **Neovim >= 0.11** installed.
+2. Clone this repo:
+
+```bash
+git clone https://github.com/yourusername/your-neovim-config.git ~/.config/nvim
 
