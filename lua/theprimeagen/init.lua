@@ -9,11 +9,20 @@ require("theprimeagen.lazy_init")
 -- If i want to keep doing lsp debugging
 -- function restart_htmx_lsp()
 --     require("lsp-debug-tools").restart({ expected = {}, name = "htmx-lsp", cmd = { "htmx-lsp", "--level", "DEBUG" }, root_dir = vim.loop.cwd(), });
--- end
-
+--i end
 -- DO NOT INCLUDE THIS
+-- For Neovide
+vim.g.neovide_font = "JetBrains Mono:h13"  -- h14 is size, adjust as needed
+vim.g.neovide_opacity = 0.9           -- optional transparency
+vim.o.mouse = "a"
+vim.o.autoread = true
+vim.o.autowrite = true
+vim.o.confirm = false
+vim.g.neovide_fullscreen = true   -- باز شدن در حالت فول‌اسکرین
 -- DO.not
-
+-- vim.g.loaded_netrw = 1
+-- vim.g.loaded_netrwPlugin = 1
+vim.g.lazyvim_check_order = false
 local augroup = vim.api.nvim_create_augroup
 local ThePrimeagenGroup = augroup('ThePrimeagen', {})
 

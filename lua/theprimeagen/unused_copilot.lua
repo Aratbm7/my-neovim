@@ -4,7 +4,7 @@ return {
 	init = function()
 		vim.g.copilot_nes_debounce = 500
 		vim.lsp.enable("copilot")
-		vim.keymap.set("n", "<tab>", function()
+		vim.keymap.set("n", "<tabyiw>", function()
 			require("copilot-lsp.nes").apply_pending_nes()
 		end)
 	end,

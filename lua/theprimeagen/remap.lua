@@ -1,10 +1,44 @@
 vim.g.mapleader = " "
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+-- Toggle Snacks Explorer with <leader>pv
 
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.api.nvim_set_keymap("n", "<leader>tp", "<Plug>PlenaryTestFile", { noremap = false, silent = false })
+--
+--Change copy keymaps
+vim.api.nvim_set_keymap(
+	"n",
+	"<leader>o",
+	":lua require('snacks').explorer.open()<CR>",
+	{ noremap = true, silent = true }
+)
+
+vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+-- =========================
+-- 🔹 Yank/Cut -> System Clipboard
+-- =========================
+
+-- Normal mode: همه yanks به clipboard
+vim.keymap.set("n", "y", '"+y', { noremap = true, silent = true })
+vim.keymap.set("n", "yy", '"+yy', { noremap = true, silent = true })
+vim.keymap.set("n", "yw", '"+yw', { noremap = true, silent = true })
+
+-- Visual mode: همه yanks به clipboard
+vim.keymap.set("v", "y", '"+y', { noremap = true, silent = true })
+vim.keymap.set("v", "d", '"+d', { noremap = true, silent = true }) -- cut به clipboard
+
+-- Normal mode: cut به clipboard
+vim.keymap.set("n", "d", '"+d', { noremap = true, silent = true })
+vim.keymap.set("n", "dd", '"+dd', { noremap = true, silent = true })
+
+-- Paste از clipboard سیستم
+vim.keymap.set("n", "p", '"+p', { noremap = true, silent = true })
+vim.keymap.set("n", "P", '"+P', { noremap = true, silent = true })
+vim.keymap.set("i", "<C-v>", "<C-r>+", { noremap = true, silent = true })
+
+-- اگر بخوای yank کلمه زیر cursor هم مستقیم بره clipboard
+vim.keymap.set("n", "yiw", '"+yiw', { noremap = true, silent = true })
 
 vim.keymap.set("n", "J", "mzJ`z")
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
@@ -19,6 +53,8 @@ vim.keymap.set("n", "=ap", "ma=ap'a")
 --end)
 
 -- greatest remap ever
+vim.keymap.set("n", "<A-k>", ":horizontal resize +3<CR>", { silent = true })
+vim.keymap.set("n", "<A-j>", ":horizontal resize -3<CR>", { silent = true })
 vim.keymap.set("x", "<leader>p", [["_dP]])
 
 -- next greatest remap ever : asbjornHaland
@@ -49,7 +85,13 @@ vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+-- جابجایی بین پنجره‌ها با <leader>w + j/k/h/l
+vim.keymap.set("n", "<leader>wh", "<C-w>h", { silent = true, desc = "پنجره سمت چپ" })
+vim.keymap.set("n", "<leader>wj", "<C-w>j", { silent = true, desc = "پنجره پایین" })
+vim.keymap.set("n", "<leader>wk", "<C-w>k", { silent = true, desc = "پنجره بالا" })
+vim.keymap.set("n", "<leader>wl", "<C-w>l", { silent = true, desc = "پنجره سمت راست" })
 
+vim.keymap.set("n", "<leader>wf", ":w<CR>", { desc = "Save file" })
 --[[ vim.keymap.set(
     "n",
     "<leader>ee",
@@ -104,3 +146,7 @@ vim.keymap.set(
 	vim.lsp.buf.type_definition,
 	vim.tbl_extend("force", opts, { desc = "Go to Type Definition" })
 )
+vim.keymap.set("n", "<leader>ih", function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }))
+end, { desc = "Toggle Inlay Hints" })
+

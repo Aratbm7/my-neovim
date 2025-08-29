@@ -1,4 +1,7 @@
 ### ThePrimeagen's init.lua
+        order_receipt: OrderReceipt = OrderReceipt.objects.create(
+            order=order, torob_reciept=True
+        )
 Prerequisite: install [ripgrep](https://github.com/BurntSushi/ripgrep).
 
 [The full video of me setting up this repo](https://www.youtube.com/watch?v=w7i4amO_zaE)
