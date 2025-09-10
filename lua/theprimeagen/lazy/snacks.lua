@@ -13,7 +13,14 @@ return {
       enabled = true,
       timeout = 3000,
     },
-    picker = { enabled = true },
+    picker = {
+      enabled = true,
+      on_attach = function(picker, map)
+        -- تضمین کن که Enter همیشه روی آیتم انتخاب‌شده عمل کنه
+        picker:map("i", "<CR>", picker.confirm)
+        picker:map("n", "<CR>", picker.confirm)
+      end,
+    },
     quickfile = { enabled = true },
     scope = { enabled = true },
     scroll = { enabled = true },
@@ -23,7 +30,7 @@ return {
       notification = {
         -- wo = { wrap = true } -- Wrap notifications
       }
-    }
+    },
   },
   keys = {
     -- Top Pickers & Explorer

@@ -1,21 +1,10 @@
 return {
-	{
-		"okuuva/auto-save.nvim",
-		event = { "InsertLeave", "TextChanged" }, -- lazy load
-		opts = {
-			enabled = true,
-			trigger_events = { "InsertLeave", "TextChanged", "TextChangedI", "BufLeave", "QuitPre" },
-			condition = function(buf)
-				return vim.api.nvim_buf_get_option(buf, "modifiable")
-			end,
-			write_all_buffers = false,
-			debounce_delay = 100, -- milliseconds
-		},
-		config = function(_, opts)
-			require("auto-save").setup(opts)
-
-			-- optional: toggle with <leader>as
-			vim.keymap.set("n", "<leader>as", "<cmd>ASToggle<CR>", { desc = "Toggle AutoSave" })
-		end,
-	},
+  {
+    "okuuva/auto-save.nvim",
+    lazy = false, -- لود همیشگی (مشکلات event پیش نمیاد)
+    config = function()
+      require("auto-save").setup() -- فقط پیش‌فرض‌ها
+      vim.keymap.set("n", "<leader>as", "<cmd>ASToggle<CR>", { desc = "Toggle AutoSave" })
+    end,
+  },
 }

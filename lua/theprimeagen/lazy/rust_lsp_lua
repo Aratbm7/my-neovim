@@ -1,0 +1,28 @@
+return {
+  "neovim/nvim-lspconfig",
+  config = function()
+    local lspconfig = require("lspconfig")
+
+    lspconfig.rust_analyzer.setup({
+      settings = {
+        ["rust-analyzer"] = {
+          cargo = { allFeatures = true },
+          checkOnSave = { command = "clippy" },
+          inlayHints = {
+            enable = true,
+            typeHints = true,
+            parameterHints = true,
+            chainingHints = true,
+            closingBraceHints = true,
+          },
+        },
+      },
+      on_attach = function(client, bufnr)
+        if client.server_capabilities.inlayHintProvider then
+          vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+        end
+      end,
+    })
+  end,
+}
+
