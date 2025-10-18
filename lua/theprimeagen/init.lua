@@ -13,7 +13,7 @@ require("theprimeagen.lazy_init")
 -- DO NOT INCLUDE THIS
 -- For Neovide
 vim.g.neovide_font = "JetBrains Mono:h13" -- h14 is size, adjust as needed
-vim.g.neovide_opacity = 0.9 -- optional transparency
+-- vim.g.neovide_opacity = 0.9 -- optional transparency
 vim.o.mouse = "a"
 vim.o.autoread = true
 vim.o.autowrite = true
@@ -25,11 +25,11 @@ vim.g.neovide_window_height = 800
 -- یا به صورت نسبتی (scale factor مثل زوم VS Code)
 vim.g.neovide_scale_factor = 1.0
 vim.keymap.set("n", "<C-=>", function()
-  vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * 1.1
+	vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * 1.1
 end, { desc = "Zoom in" })
 
 vim.keymap.set("n", "<C-->", function()
-  vim.g.neovide_scale_factor = vim.g.neovide_scale_factor / 1.1
+	vim.g.neovide_scale_factor = vim.g.neovide_scale_factor / 1.1
 end, { desc = "Zoom out" })
 vim.g.neovide_floating_blur_amount_x = 2.0
 vim.g.neovide_floating_blur_amount_y = 2.0
@@ -38,11 +38,13 @@ vim.g.neovide_hide_mouse_when_typing = true
 vim.g.neovide_input_use_logo = 1
 vim.opt.clipboard = "unnamedplus"
 vim.keymap.set("n", "<leader>co", function()
-  local cmd = vim.fn.input("Command: ")
-  if cmd == "" then return end
-  local output = vim.api.nvim_exec2(cmd, { output = true }).output
-  vim.fn.setreg("+", output)
-  print("Output of :" .. cmd .. " copied to clipboard!")
+	local cmd = vim.fn.input("Command: ")
+	if cmd == "" then
+		return
+	end
+	local output = vim.api.nvim_exec2(cmd, { output = true }).output
+	vim.fn.setreg("+", output)
+	print("Output of :" .. cmd .. " copied to clipboard!")
 end, { desc = "Copy command output to clipboard" })
 -- DO.not
 -- viim.g.loaded_netrw = 1
@@ -84,7 +86,7 @@ autocmd({ "BufWritePre" }, {
 autocmd("BufEnter", {
 	group = ThePrimeagenGroup,
 	callback = function()
-	if vim.bo.filetype == "zig" then
+		if vim.bo.filetype == "zig" then
 			pcall(vim.cmd.colorscheme, "tokyonight-night")
 		else
 			pcall(vim.cmd.colorscheme, "rose-pine-moon")

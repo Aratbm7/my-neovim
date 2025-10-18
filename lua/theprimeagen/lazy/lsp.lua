@@ -48,10 +48,11 @@ return {
 			local lspconfig = require("lspconfig")
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-			local on_attach = function(client, bufnr)
+			local default_on_attach = function(client, bufnr)
 				if client.server_capabilities.inlayHintProvider then
-					vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+					vim.lsp.inlay_hint(bufnr, true)
 				end
+
 				local opts = { buffer = bufnr, silent = true }
 				vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
@@ -61,14 +62,68 @@ return {
 				vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 			end
 
+			-- Lua
+			lspconfig.lua_ls.setup({
+				capabilities = capabilities,
+				settings = {
+					Lua = {
+						diagnostics = { globals = { "vim", "Snacks" } },
+					},
+				},
+				on_attach = default_on_attach,
+			})
+
+			-- Python
+			lspconfig.pyright.setup({
+				capabilities = capabilities,
+				settings = {
+					python = {
+						analysis = {
+							typeCheckingMode = "basic",
+							autoSearchPaths = true,
+							useLibraryCodeForTypes = true,
+							diagnosticMode = "workspace",
+						},
+					},
+				},
+				on_attach = default_on_attach,
+			})
+
+			-- Rust
+			lspconfig.rust_analyzer.setup({
+				capabilities = capabilities,
+				settings = {
+					["rust-analyzer"] = {
+						cargo = { allFeatures = true },
+						checkOnSave = { command = "clippy" },
+						inlayHints = {
+							enable = true,
+							typeHints = true,
+							parameterHints = true,
+							chainingHints = true,
+							closingBraceHints = true,
+						},
+					},
+				},
+				on_attach = default_on_attach,
+			})
+
+			-- TypeScript / JavaScript
+			lspconfig.ts_ls.setup({
+				capabilities = capabilities,
+				on_attach = default_on_attach,
+				filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+				cmd = { "typescript-language-server", "--stdio" },
+			})
+
 			-- ESLint
 			lspconfig.eslint.setup({
 				capabilities = capabilities,
 				on_attach = function(client, bufnr)
-					client.server_capabilities.documentFormattingProvider = true
-					on_attach(client, bufnr)
+					client.server_capabilities.documentFormattingProvider = false
+					client.server_capabilities.documentRangeFormatingProvider = false
+					default_on_attach(client, bufnr)
 
-					-- Auto-fix on save
 					vim.api.nvim_create_autocmd("BufWritePre", {
 						buffer = bufnr,
 						command = "EslintFixAll",
@@ -76,12 +131,12 @@ return {
 				end,
 			})
 
-			-- Default setup for generic servers
+			-- Generic servers
 			local servers = { "html", "cssls", "tailwindcss", "emmet_ls", "jsonls", "yamlls" }
 			for _, server in ipairs(servers) do
 				lspconfig[server].setup({
 					capabilities = capabilities,
-					on_attach = on_attach,
+					on_attach = default_on_attach,
 				})
 			end
 		end,
